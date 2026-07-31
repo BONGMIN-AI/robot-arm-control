@@ -32,3 +32,24 @@ Terminal 2:
 ```bash
 ros2 topic pub --once /robot_arm/joint_targets std_msgs/msg/Float64MultiArray "{data: [150, 180, 180, 150, 150, 150]}"
 ```
+
+By default this runs in mock mode and prints servo commands without moving hardware.
+
+## Run With AX-12A Hardware
+
+Use only after dry-run testing:
+
+```bash
+ros2 run robot_arm_bringup joint_command_listener --ros-args \
+  -p mock:=false \
+  -p device:=/dev/ttyUSB0 \
+  -p step_deg:=1.0 \
+  -p delay_sec:=0.08 \
+  -p speed:=50
+```
+
+Then publish a target:
+
+```bash
+ros2 topic pub --once /robot_arm/joint_targets std_msgs/msg/Float64MultiArray "{data: [150, 150, 160, 150, 150, 150]}"
+```
