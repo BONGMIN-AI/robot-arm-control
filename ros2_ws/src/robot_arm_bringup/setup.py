@@ -20,6 +20,7 @@ setup(
     entry_points={
         "console_scripts": [
             "arm_status = robot_arm_bringup.arm_status:main",
+            "arm_torque = robot_arm_bringup.arm_torque:main",
             "joint_command_listener = robot_arm_bringup.joint_command_listener:main",
             "send_joint_target = robot_arm_bringup.send_joint_target:main",
         ],

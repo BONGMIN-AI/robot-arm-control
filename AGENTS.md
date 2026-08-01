@@ -157,6 +157,15 @@ arm-send 150 150 155 150 150 150
 arm_status --device /dev/ttyUSB0
 ```
 
+토크 제어:
+
+```bash
+arm_torque on --device /dev/ttyUSB0
+arm_torque off --device /dev/ttyUSB0
+```
+
+주의: `arm_torque off`는 기본적으로 홈 자세 `150 150 150 150 150 150`으로 이동한 뒤 토크를 끈다.
+
 mock 상태 읽기:
 
 ```bash
@@ -181,6 +190,7 @@ echo "alias arm-setup='cd ~/robot-arm-control && git pull && cd ros2_ws && sourc
 echo "alias arm-real='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup joint_command_listener --ros-args -p mock:=false -p device:=/dev/ttyUSB0 -p step_deg:=1.0 -p delay_sec:=0.08 -p speed:=50'" >> ~/.bashrc
 echo "alias arm-send='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && source install/setup.bash && ros2 run robot_arm_bringup send_joint_target'" >> ~/.bashrc
 echo "alias arm-status='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_status --device /dev/ttyUSB0'" >> ~/.bashrc
+echo "alias arm-torque='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_torque --device /dev/ttyUSB0'" >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -191,6 +201,7 @@ type arm-setup
 type arm-real
 type arm-send
 type arm-status
+type arm-torque
 ```
 
 현재 alias 내용만 임시로 다시 잡고 싶으면:
@@ -200,6 +211,7 @@ alias arm-setup='cd ~/robot-arm-control && git pull && cd ros2_ws && source /opt
 alias arm-real='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup joint_command_listener --ros-args -p mock:=false -p device:=/dev/ttyUSB0 -p step_deg:=1.0 -p delay_sec:=0.08 -p speed:=50'
 alias arm-send='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && source install/setup.bash && ros2 run robot_arm_bringup send_joint_target'
 alias arm-status='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_status --device /dev/ttyUSB0'
+alias arm-torque='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_torque --device /dev/ttyUSB0'
 ```
 
 사용법:
@@ -211,6 +223,8 @@ arm-real
 arm-send 150 150 155 150 150 150
 arm-send 150 150 150 150 150 150
 arm-status
+arm-torque off
+arm-torque on
 ```
 
 주의:
@@ -220,6 +234,8 @@ arm-status
 - `arm-send`는 반드시 뒤에 J0~J5 각도 6개를 넣어야 한다.
 - 예: `arm-send 150 150 155 150 150 150`
 - `arm-status`는 J0~J5의 현재 각도, 전압, 온도를 읽는다.
+- `arm-torque off`는 홈 자세로 이동한 뒤 토크를 끈다.
+- 손으로 티칭 자세를 만들 때만 토크를 끄고, 팔이 갑자기 처지지 않게 받친다.
 - 포트가 `/dev/ttyUSB1` 등으로 바뀌면 alias의 `device:=...`를 수정한다.
 
 ## 안전 주의
