@@ -19,6 +19,7 @@ setup(
     license="MIT",
     entry_points={
         "console_scripts": [
+            "arm_save_pose = robot_arm_bringup.arm_save_pose:main",
             "arm_status = robot_arm_bringup.arm_status:main",
             "arm_torque = robot_arm_bringup.arm_torque:main",
             "joint_command_listener = robot_arm_bringup.joint_command_listener:main",

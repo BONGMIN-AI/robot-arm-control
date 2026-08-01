@@ -85,6 +85,7 @@ arm-send 150 150 150 150 150 150
 - [x] `raspberry_pi/read_status.py` 상태 읽기 명령 추가
 - [x] ROS2 패키지에 `arm_status` 콘솔 명령 추가
 - [x] 홈 복귀 후 토크를 끄는 `arm_torque off` 명령 추가
+- [x] 현재 자세를 `poses/<name>.json`으로 저장하는 `arm_save_pose` 명령 추가
 - [ ] Jetson에서 `arm_status --mock` 실행 확인
 - [ ] Jetson에서 실제 장치 `arm_status --device /dev/ttyUSB0` 실행 확인
 - [ ] Jetson에서 `arm_torque off` 안전 동작 확인
@@ -95,12 +96,14 @@ arm-send 150 150 150 150 150 150
 - [ ] J1 과부하 보호 발생 시 홈 복귀/정지 전략 정리
 - [ ] `arm-status` alias를 Jetson `~/.bashrc`에 등록
 - [ ] `arm-torque` alias를 Jetson `~/.bashrc`에 등록
+- [ ] `arm-save-pose` alias를 Jetson `~/.bashrc`에 등록
 
 필요 코드 후보:
 
 ```text
 raspberry_pi/read_status.py              # 추가됨
 raspberry_pi/torque_control.py           # 추가됨
+raspberry_pi/pose_store.py               # 추가됨
 ros2_ws/src/robot_arm_bringup/robot_arm_bringup/status_publisher.py
 ```
 
@@ -219,8 +222,9 @@ arm-send 150 150 155 150 150 150
 arm-send 150 150 150 150 150 150
 ```
 
-5. `arm-status`, `arm-torque` alias 등록
+5. `arm-status`, `arm-torque`, `arm-save-pose` alias 등록
 6. `arm-torque off`가 홈 복귀 후 토크를 끄는지 확인
+7. 손으로 자세를 잡고 `arm-save-pose idle_01_a` 저장 확인
 
 ## 결정 보류
 
