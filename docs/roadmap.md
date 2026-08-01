@@ -86,17 +86,17 @@ arm-send 150 150 150 150 150 150
 - [x] ROS2 패키지에 `arm_status` 콘솔 명령 추가
 - [x] 홈 복귀 후 토크를 끄는 `arm_torque off` 명령 추가
 - [x] 현재 자세를 `poses/<name>.json`으로 저장하는 `arm_save_pose` 명령 추가
-- [ ] Jetson에서 `arm_status --mock` 실행 확인
-- [ ] Jetson에서 실제 장치 `arm_status --device /dev/ttyUSB0` 실행 확인
-- [ ] Jetson에서 `arm_torque off` 안전 동작 확인
-- [ ] AX-12A 현재 위치 읽기 테스트
-- [ ] AX-12A 온도 읽기 테스트
-- [ ] AX-12A 전압 읽기 테스트
+- [x] Jetson에서 실제 장치 `arm-status` 실행 확인
+- [x] Jetson에서 `arm-torque off` 안전 동작 확인
+- [x] Jetson에서 `arm-save-pose sleep_01` 저장 성공
+- [x] AX-12A 현재 위치 읽기 테스트
+- [x] AX-12A 온도 읽기 테스트
+- [x] AX-12A 전압 읽기 테스트
 - [ ] 에러 발생 시 로그를 보기 쉽게 출력
 - [ ] J1 과부하 보호 발생 시 홈 복귀/정지 전략 정리
-- [ ] `arm-status` alias를 Jetson `~/.bashrc`에 등록
-- [ ] `arm-torque` alias를 Jetson `~/.bashrc`에 등록
-- [ ] `arm-save-pose` alias를 Jetson `~/.bashrc`에 등록
+- [x] `arm-status` alias를 Jetson `~/.bashrc`에 등록
+- [x] `arm-torque` alias를 Jetson `~/.bashrc`에 등록
+- [x] `arm-save-pose` alias를 Jetson `~/.bashrc`에 등록
 
 필요 코드 후보:
 
@@ -222,9 +222,7 @@ arm-send 150 150 155 150 150 150
 arm-send 150 150 150 150 150 150
 ```
 
-5. `arm-status`, `arm-torque`, `arm-save-pose` alias 등록
-6. `arm-torque off`가 홈 복귀 후 토크를 끄는지 확인
-7. 손으로 자세를 잡고 `arm-save-pose idle_01_a` 저장 확인
+5. 저장된 `sleep_01` 포즈를 확인하고, 다음으로 `arm-list-poses`와 `arm-go-pose` 구현 시작
 
 ## 결정 보류
 

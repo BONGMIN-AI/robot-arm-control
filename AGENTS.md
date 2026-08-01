@@ -233,7 +233,7 @@ arm-send 150 150 155 150 150 150
 arm-send 150 150 150 150 150 150
 arm-status
 arm-torque off
-arm-save-pose idle_01_a
+arm-save-pose sleep_01
 arm-torque on
 ```
 
@@ -272,6 +272,9 @@ arm-torque on
 - ROS2 topic publish/listen 성공
 - ROS2 명령으로 실제 AX-12A 이동 성공
 - `arm-real`, `arm-send` 방식으로 제어 흐름 단순화
+- `arm-status`로 실제 J0~J5 현재 각도/전압/온도 읽기 성공
+- `arm-torque off`로 홈 복귀 후 토크 끄기 성공
+- `arm-save-pose sleep_01`로 첫 티칭 포즈 저장 성공
 
 ## 다음 구현 방향
 
