@@ -178,6 +178,7 @@ arm_save_pose idle_01_a --device /dev/ttyUSB0
 arm_list_poses
 arm_go_pose sleep_01 --device /dev/ttyUSB0
 arm_go_pose sleep_01 --device /dev/ttyUSB0 --allow-unsafe
+arm_go_pose sleep_01 --device /dev/ttyUSB0 --allow-unsafe --step 1.0 --delay 0.03 --speed 80
 ```
 
 mock 상태 읽기:
@@ -237,6 +238,19 @@ alias arm-list-poses='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/s
 alias arm-go-pose='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_go_pose --device /dev/ttyUSB0'
 ```
 
+오늘 만든 alias 전체 블록:
+
+```bash
+alias arm-setup='cd ~/robot-arm-control && git pull && cd ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && colcon build && source install/setup.bash'
+alias arm-real='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup joint_command_listener --ros-args -p mock:=false -p device:=/dev/ttyUSB0 -p step_deg:=1.0 -p delay_sec:=0.08 -p speed:=50'
+alias arm-send='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && source install/setup.bash && ros2 run robot_arm_bringup send_joint_target'
+alias arm-status='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_status --device /dev/ttyUSB0'
+alias arm-torque='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_torque --device /dev/ttyUSB0'
+alias arm-save-pose='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_save_pose --device /dev/ttyUSB0'
+alias arm-list-poses='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_list_poses'
+alias arm-go-pose='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_go_pose --device /dev/ttyUSB0'
+```
+
 사용법:
 
 ```bash
@@ -251,6 +265,7 @@ arm-save-pose sleep_01
 arm-torque on
 arm-list-poses
 arm-go-pose sleep_01
+arm-go-pose sleep_01 --allow-unsafe --step 1.0 --delay 0.03 --speed 80
 ```
 
 주의:
@@ -265,6 +280,7 @@ arm-go-pose sleep_01
 - `arm-list-poses`는 저장된 포즈 이름 목록을 보여준다.
 - `arm-go-pose 이름`은 현재 자세에서 저장된 포즈로 보간 이동한다.
 - `arm-go-pose 이름 --allow-unsafe`는 소프트웨어 관절 제한을 적용하지 않고 저장 각도를 그대로 재생한다.
+- `sleep_01` 재생 기본 후보는 `--allow-unsafe --step 1.0 --delay 0.03 --speed 80`이다.
 - 손으로 티칭 자세를 만들 때만 토크를 끄고, 팔이 갑자기 처지지 않게 받친다.
 - 포트가 `/dev/ttyUSB1` 등으로 바뀌면 alias의 `device:=...`를 수정한다.
 
@@ -294,6 +310,9 @@ arm-go-pose sleep_01
 - `arm-status`로 실제 J0~J5 현재 각도/전압/온도 읽기 성공
 - `arm-torque off`로 홈 복귀 후 토크 끄기 성공
 - `arm-save-pose sleep_01`로 첫 티칭 포즈 저장 성공
+- `arm-list-poses`, `arm-go-pose` 구현 및 저장 포즈 재생 흐름 정리
+- `sleep_01` 원본 각도 재생에는 `--allow-unsafe`가 필요함을 확인
+- `sleep_01` 재생 파라미터 후보를 `step=1.0`, `delay=0.03`, `speed=80`으로 결정
 
 ## 다음 구현 방향
 

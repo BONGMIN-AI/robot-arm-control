@@ -89,6 +89,7 @@ arm-send 150 150 150 150 150 150
 - [x] 저장된 포즈 목록을 보는 `arm_list_poses` 명령 추가
 - [x] 저장된 포즈로 이동하는 `arm_go_pose` 명령 추가
 - [x] 티칭 포즈 원본 각도 재생용 `arm_go_pose --allow-unsafe` 옵션 추가
+- [x] `sleep_01` 재생 파라미터 후보 결정: `--step 1.0 --delay 0.03 --speed 80`
 - [x] Jetson에서 실제 장치 `arm-status` 실행 확인
 - [x] Jetson에서 `arm-torque off` 안전 동작 확인
 - [x] Jetson에서 `arm-save-pose sleep_01` 저장 성공
@@ -232,7 +233,8 @@ arm-send 150 150 150 150 150 150
 5. `arm-list-poses`, `arm-go-pose` alias 등록
 6. `arm-list-poses`에서 `sleep_01` 확인
 7. 기본 `arm-go-pose sleep_01`는 안전 제한 때문에 J1/J2/J3가 잘리는지 확인
-8. 필요할 때만 `arm-go-pose sleep_01 --allow-unsafe`로 저장 원본 각도 재생 테스트
+8. 필요할 때만 `arm-go-pose sleep_01 --allow-unsafe --step 1.0 --delay 0.03 --speed 80`로 저장 원본 각도 재생 테스트
+9. 다음 구현: `motions/*.json`에 여러 포즈를 묶고 `arm-play`로 idle 동작 재생
 
 ## 결정 보류
 
