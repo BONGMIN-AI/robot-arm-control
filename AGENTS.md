@@ -173,25 +173,50 @@ arm-send 150 150 150 150 150 150
 
 현재 사용 중인 alias는 `~/.bashrc`에 두는 방식이다.
 
-포트가 `/dev/ttyUSB0`이면:
+다른 세션에서 Jetson alias를 다시 잡아야 하면 아래 블록을 그대로 복붙한다.  
+포트가 `/dev/ttyUSB0`일 때 기준이다.
 
 ```bash
-alias arm-real='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup joint_command_listener --ros-args -p mock:=false -p device:=/dev/ttyUSB0 -p step_deg:=1.0 -p delay_sec:=0.08 -p speed:=50'
-alias arm-send='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && source install/setup.bash && ros2 run robot_arm_bringup send_joint_target'
-alias arm-status='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_status --device /dev/ttyUSB0'
+echo "alias arm-setup='cd ~/robot-arm-control && git pull && cd ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && colcon build && source install/setup.bash'" >> ~/.bashrc
+echo "alias arm-real='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup joint_command_listener --ros-args -p mock:=false -p device:=/dev/ttyUSB0 -p step_deg:=1.0 -p delay_sec:=0.08 -p speed:=50'" >> ~/.bashrc
+echo "alias arm-send='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && source install/setup.bash && ros2 run robot_arm_bringup send_joint_target'" >> ~/.bashrc
+echo "alias arm-status='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_status --device /dev/ttyUSB0'" >> ~/.bashrc
+source ~/.bashrc
 ```
 
-적용:
+등록 후 확인:
 
 ```bash
-source ~/.bashrc
+type arm-setup
 type arm-real
 type arm-send
 type arm-status
 ```
 
+현재 alias 내용만 임시로 다시 잡고 싶으면:
+
+```bash
+alias arm-setup='cd ~/robot-arm-control && git pull && cd ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && colcon build && source install/setup.bash'
+alias arm-real='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup joint_command_listener --ros-args -p mock:=false -p device:=/dev/ttyUSB0 -p step_deg:=1.0 -p delay_sec:=0.08 -p speed:=50'
+alias arm-send='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && source install/setup.bash && ros2 run robot_arm_bringup send_joint_target'
+alias arm-status='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_status --device /dev/ttyUSB0'
+```
+
+사용법:
+
+```bash
+ls /dev/ttyUSB*
+arm-setup
+arm-real
+arm-send 150 150 155 150 150 150
+arm-send 150 150 150 150 150 150
+arm-status
+```
+
 주의:
 
+- `arm-setup`은 `git pull`, ROS2 환경 적용, `colcon build`, workspace source까지 한 번에 수행한다.
+- `arm-real`은 계속 켜두는 실제 모터 제어 listener다.
 - `arm-send`는 반드시 뒤에 J0~J5 각도 6개를 넣어야 한다.
 - 예: `arm-send 150 150 155 150 150 150`
 - `arm-status`는 J0~J5의 현재 각도, 전압, 온도를 읽는다.
