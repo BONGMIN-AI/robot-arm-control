@@ -2,6 +2,16 @@
 
 이 파일은 Codex 세션 시작 시 먼저 읽어야 하는 프로젝트 메모다.
 
+## 세션 시작 규칙
+
+새 Codex 세션에서 이 프로젝트를 다룰 때는 먼저 이 파일을 읽고, 이어서 다음 진행 지도를 읽는다.
+
+```text
+docs/roadmap.md
+```
+
+진행 중 새로 결정된 환경/명령/주의사항은 `AGENTS.md`에, 앞으로의 작업 순서와 체크리스트는 `docs/roadmap.md`에 갱신한다.
+
 ## 프로젝트 개요
 
 프로젝트명: Robot Arm
@@ -208,4 +218,3 @@ type arm-send
 6. URDF/MoveIt으로 확장
 
 Raspberry Pi 3는 성능이 약하므로, 처음에는 ROS2를 올리지 않고 Python HTTP 서버로 쓰는 방향을 선호한다.
-
