@@ -19,8 +19,31 @@ def default_pose_dir():
     return Path(__file__).resolve().parents[1] / "poses"
 
 
-def save_pose(name, rows, pose_dir=None):
+def pose_path(name, pose_dir=None):
     validate_pose_name(name)
+    target_dir = Path(pose_dir) if pose_dir else default_pose_dir()
+    return target_dir / f"{name}.json"
+
+
+def list_poses(pose_dir=None):
+    target_dir = Path(pose_dir) if pose_dir else default_pose_dir()
+    if not target_dir.exists():
+        return []
+    return sorted(path.stem for path in target_dir.glob("*.json"))
+
+
+def load_pose(name, pose_dir=None):
+    path = pose_path(name, pose_dir)
+    with path.open("r", encoding="utf-8") as file:
+        data = json.load(file)
+    angles = data.get("angles")
+    if not isinstance(angles, list) or len(angles) != 6:
+        raise ValueError(f"Pose {name} must contain six angles.")
+    data["angles"] = [float(angle) for angle in angles]
+    return path, data
+
+
+def save_pose(name, rows, pose_dir=None):
     target_dir = Path(pose_dir) if pose_dir else default_pose_dir()
     target_dir.mkdir(parents=True, exist_ok=True)
 
@@ -33,7 +56,7 @@ def save_pose(name, rows, pose_dir=None):
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
 
-    path = target_dir / f"{name}.json"
+    path = pose_path(name, target_dir)
     with path.open("w", encoding="utf-8") as file:
         json.dump(data, file, indent=2)
         file.write("\n")

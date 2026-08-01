@@ -86,6 +86,8 @@ arm-send 150 150 150 150 150 150
 - [x] ROS2 패키지에 `arm_status` 콘솔 명령 추가
 - [x] 홈 복귀 후 토크를 끄는 `arm_torque off` 명령 추가
 - [x] 현재 자세를 `poses/<name>.json`으로 저장하는 `arm_save_pose` 명령 추가
+- [x] 저장된 포즈 목록을 보는 `arm_list_poses` 명령 추가
+- [x] 저장된 포즈로 이동하는 `arm_go_pose` 명령 추가
 - [x] Jetson에서 실제 장치 `arm-status` 실행 확인
 - [x] Jetson에서 `arm-torque off` 안전 동작 확인
 - [x] Jetson에서 `arm-save-pose sleep_01` 저장 성공
@@ -97,6 +99,8 @@ arm-send 150 150 150 150 150 150
 - [x] `arm-status` alias를 Jetson `~/.bashrc`에 등록
 - [x] `arm-torque` alias를 Jetson `~/.bashrc`에 등록
 - [x] `arm-save-pose` alias를 Jetson `~/.bashrc`에 등록
+- [ ] `arm-list-poses` alias를 Jetson `~/.bashrc`에 등록
+- [ ] `arm-go-pose` alias를 Jetson `~/.bashrc`에 등록
 
 필요 코드 후보:
 
@@ -104,6 +108,8 @@ arm-send 150 150 150 150 150 150
 raspberry_pi/read_status.py              # 추가됨
 raspberry_pi/torque_control.py           # 추가됨
 raspberry_pi/pose_store.py               # 추가됨
+raspberry_pi/list_poses.py               # 추가됨
+raspberry_pi/go_pose.py                  # 추가됨
 ros2_ws/src/robot_arm_bringup/robot_arm_bringup/status_publisher.py
 ```
 
@@ -222,7 +228,9 @@ arm-send 150 150 155 150 150 150
 arm-send 150 150 150 150 150 150
 ```
 
-5. 저장된 `sleep_01` 포즈를 확인하고, 다음으로 `arm-list-poses`와 `arm-go-pose` 구현 시작
+5. `arm-list-poses`, `arm-go-pose` alias 등록
+6. `arm-list-poses`에서 `sleep_01` 확인
+7. `arm-go-pose sleep_01`로 저장 포즈 이동 테스트
 
 ## 결정 보류
 
