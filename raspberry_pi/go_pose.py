@@ -11,13 +11,13 @@ from read_status import JOINT_COUNT, load_driver
 from torque_control import read_current_pose
 
 
-def go_pose(driver, target_angles, step_deg, delay_sec, speed):
+def go_pose(driver, target_angles, step_deg, delay_sec, speed, allow_unsafe=False):
     start_pose = read_current_pose(driver)
     for servo_id in range(JOINT_COUNT):
         driver.torque_on(servo_id)
         driver.set_speed(servo_id, speed)
 
-    path = interpolate_motion(start_pose, target_angles, step_deg)
+    path = interpolate_motion(start_pose, target_angles, step_deg, clamp=not allow_unsafe)
     for pose in path:
         print("move:", " ".join(f"{angle:.2f}" for angle in pose))
         for servo_id, angle in enumerate(pose):
@@ -35,6 +35,11 @@ def main():
     parser.add_argument("--speed", type=int, default=50)
     parser.add_argument("--mock", action="store_true")
     parser.add_argument("--pose-dir", default=None)
+    parser.add_argument(
+        "--allow-unsafe",
+        action="store_true",
+        help="Replay saved angles without applying software joint limits.",
+    )
     args = parser.parse_args()
 
     path, data = load_pose(args.name, args.pose_dir)
@@ -43,7 +48,7 @@ def main():
     driver = load_driver(args.mock, args.device, args.baudrate)
     driver.connect()
     try:
-        go_pose(driver, data["angles"], args.step, args.delay, args.speed)
+        go_pose(driver, data["angles"], args.step, args.delay, args.speed, args.allow_unsafe)
     finally:
         driver.close()
 

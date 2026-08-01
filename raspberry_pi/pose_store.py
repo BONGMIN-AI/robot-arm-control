@@ -34,7 +34,7 @@ def list_poses(pose_dir=None):
 
 def load_pose(name, pose_dir=None):
     path = pose_path(name, pose_dir)
-    with path.open("r", encoding="utf-8") as file:
+    with path.open("r", encoding="utf-8-sig") as file:
         data = json.load(file)
     angles = data.get("angles")
     if not isinstance(angles, list) or len(angles) != 6:

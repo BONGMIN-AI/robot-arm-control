@@ -177,6 +177,7 @@ arm_save_pose idle_01_a --device /dev/ttyUSB0
 ```bash
 arm_list_poses
 arm_go_pose sleep_01 --device /dev/ttyUSB0
+arm_go_pose sleep_01 --device /dev/ttyUSB0 --allow-unsafe
 ```
 
 mock 상태 읽기:
@@ -263,6 +264,7 @@ arm-go-pose sleep_01
 - `arm-save-pose 이름`은 현재 J0~J5 각도를 `poses/이름.json`에 저장한다.
 - `arm-list-poses`는 저장된 포즈 이름 목록을 보여준다.
 - `arm-go-pose 이름`은 현재 자세에서 저장된 포즈로 보간 이동한다.
+- `arm-go-pose 이름 --allow-unsafe`는 소프트웨어 관절 제한을 적용하지 않고 저장 각도를 그대로 재생한다.
 - 손으로 티칭 자세를 만들 때만 토크를 끄고, 팔이 갑자기 처지지 않게 받친다.
 - 포트가 `/dev/ttyUSB1` 등으로 바뀌면 alias의 `device:=...`를 수정한다.
 
