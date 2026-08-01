@@ -30,6 +30,21 @@
 4. 새로 알게 된 설정/환경은 `AGENTS.md` 또는 관련 문서에 기록한다.
 5. 오늘 할 단계는 이 문서의 체크박스로 갱신한다.
 
+## 전체 진행 순서
+
+현재 성공 지점은 터미널 2개에서 ROS2 노드로 목표 각도를 보내고 실제 AX-12A 제어까지 되는 단계다.  
+이후에는 다음 순서를 따른다.
+
+1. 상태 읽기: 현재 각도, 온도, 전압을 읽는 `arm-status` 계열 명령을 만든다.
+2. 동작 저장/재생: `motions/*.json`에 포즈 시퀀스를 저장하고 `arm-play`로 실행한다.
+3. 티칭 모드: 현재 자세를 `arm-save-pose`로 저장하고 여러 포즈를 동작으로 묶는다.
+4. 안전 계층: J1 보호, 온도/전압 감시, 속도/step 제한, 홈 복귀 전략을 넣는다.
+5. 목표 위치 제어: 역기구학으로 `x,y,z` 목표를 J0~J3 각도로 변환한다.
+6. Raspberry Pi 서버 분리: Pi를 가벼운 HTTP 모터 서버로 만들고 Jetson ROS2가 요청을 보낸다.
+7. URDF/RViz: 실측 치수와 joint limit을 모델에 반영하고 실제 관절 방향과 맞춘다.
+8. Isaac Sim: URDF를 가져와 저장 동작을 재생한 뒤, 실제 로봇과 차이를 비교한다.
+9. 학습 확장: 저장 동작/상태 로그를 바탕으로 모방학습 또는 강화학습을 검토한다.
+
 ## Phase 1. Jetson 직접 제어 안정화
 
 목표: Jetson에서 ROS2 명령으로 AX-12A를 안정적으로 움직인다.
@@ -67,17 +82,21 @@ arm-send 150 150 150 150 150 150
 
 체크리스트:
 
+- [x] `raspberry_pi/read_status.py` 상태 읽기 명령 추가
+- [x] ROS2 패키지에 `arm_status` 콘솔 명령 추가
+- [ ] Jetson에서 `arm_status --mock` 실행 확인
+- [ ] Jetson에서 실제 장치 `arm_status --device /dev/ttyUSB0` 실행 확인
 - [ ] AX-12A 현재 위치 읽기 테스트
 - [ ] AX-12A 온도 읽기 테스트
 - [ ] AX-12A 전압 읽기 테스트
 - [ ] 에러 발생 시 로그를 보기 쉽게 출력
 - [ ] J1 과부하 보호 발생 시 홈 복귀/정지 전략 정리
-- [ ] `arm-status` 명령 추가 검토
+- [ ] `arm-status` alias를 Jetson `~/.bashrc`에 등록
 
 필요 코드 후보:
 
 ```text
-raspberry_pi/read_status.py
+raspberry_pi/read_status.py              # 추가됨
 ros2_ws/src/robot_arm_bringup/robot_arm_bringup/status_publisher.py
 ```
 
@@ -186,16 +205,17 @@ kinematics/reachability.py
 
 우선순위:
 
-1. Jetson에서 `arm-setup` alias 등록 확인
-2. `arm-real` 포트를 현재 `/dev/ttyUSB0` 기준으로 맞추기
-3. 작은 각도 테스트:
+1. Jetson에서 코드 업데이트 후 ROS2 워크스페이스 빌드
+2. `arm_status --mock` 실행 확인
+3. 실제 포트를 확인한 뒤 `arm_status --device /dev/ttyUSB0` 또는 `/dev/ttyUSB1` 실행
+4. 작은 각도 테스트:
 
 ```bash
 arm-send 150 150 155 150 150 150
 arm-send 150 150 150 150 150 150
 ```
 
-4. AX-12A 상태 읽기 기능 추가 시작
+5. `arm-status` alias 등록
 
 ## 결정 보류
 
@@ -203,4 +223,3 @@ arm-send 150 150 150 150 150 150
 - Raspberry Pi에 ROS2를 올릴지, HTTP 서버만 쓸지
 - RViz를 Jetson에서 돌릴지 PC에서 돌릴지
 - J1 부하 보상을 기계적으로 할지, 제어 제한으로만 갈지
-

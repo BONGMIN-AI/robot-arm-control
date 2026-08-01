@@ -151,6 +151,18 @@ arm-real
 arm-send 150 150 155 150 150 150
 ```
 
+상태 읽기:
+
+```bash
+arm_status --device /dev/ttyUSB0
+```
+
+mock 상태 읽기:
+
+```bash
+arm_status --mock
+```
+
 홈 복귀:
 
 ```bash
@@ -166,6 +178,7 @@ arm-send 150 150 150 150 150 150
 ```bash
 alias arm-real='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup joint_command_listener --ros-args -p mock:=false -p device:=/dev/ttyUSB0 -p step_deg:=1.0 -p delay_sec:=0.08 -p speed:=50'
 alias arm-send='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && source install/setup.bash && ros2 run robot_arm_bringup send_joint_target'
+alias arm-status='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_status --device /dev/ttyUSB0'
 ```
 
 적용:
@@ -174,12 +187,14 @@ alias arm-send='cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.b
 source ~/.bashrc
 type arm-real
 type arm-send
+type arm-status
 ```
 
 주의:
 
 - `arm-send`는 반드시 뒤에 J0~J5 각도 6개를 넣어야 한다.
 - 예: `arm-send 150 150 155 150 150 150`
+- `arm-status`는 J0~J5의 현재 각도, 전압, 온도를 읽는다.
 - 포트가 `/dev/ttyUSB1` 등으로 바뀌면 alias의 `device:=...`를 수정한다.
 
 ## 안전 주의
