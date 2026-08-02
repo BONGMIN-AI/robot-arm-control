@@ -1,0 +1,20 @@
+{
+  "name": "go_inspect_01",
+  "steps": [
+    {
+      "pose": "inspect_01",
+      "joints": [3],
+      "allow_unsafe": true
+    },
+    {
+      "pose": "inspect_01",
+      "joints": [2, 1],
+      "allow_unsafe": true
+    },
+    {
+      "pose": "inspect_01",
+      "joints": [0, 4, 5],
+      "allow_unsafe": true
+    }
+  ]
+}

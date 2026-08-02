@@ -1,0 +1,11 @@
+{
+  "name": "forward_to_home",
+  "steps": [
+    {
+      "motion": "go_inspect_01"
+    },
+    {
+      "motion": "go_home_01"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "extend_forward",
+  "steps": [
+    {
+      "motion": "go_inspect_01"
+    },
+    {
+      "motion": "go_extend_forward_01"
+    }
+  ]
+}

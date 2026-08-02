@@ -1,0 +1,20 @@
+{
+  "name": "go_extend_forward_01",
+  "steps": [
+    {
+      "pose": "extend_forward_01",
+      "joints": [3],
+      "allow_unsafe": true
+    },
+    {
+      "pose": "extend_forward_01",
+      "joints": [2, 1],
+      "allow_unsafe": true
+    },
+    {
+      "pose": "extend_forward_01",
+      "joints": [0, 4, 5],
+      "allow_unsafe": true
+    }
+  ]
+}
