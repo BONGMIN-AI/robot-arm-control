@@ -3,12 +3,12 @@
   "steps": [
     {
       "pose": "extend_forward_01",
-      "joints": [3],
+      "joints": [2, 3],
       "allow_unsafe": true
     },
     {
       "pose": "extend_forward_01",
-      "joints": [2, 1],
+      "joints": [1],
       "allow_unsafe": true
     },
     {
