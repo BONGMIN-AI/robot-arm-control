@@ -1,0 +1,25 @@
+{
+  "name": "go_sleep_02",
+  "steps": [
+    {
+      "pose": "sleep_02",
+      "joints": [3],
+      "allow_unsafe": true
+    },
+    {
+      "pose": "sleep_02",
+      "joints": [2],
+      "allow_unsafe": true
+    },
+    {
+      "pose": "sleep_02",
+      "joints": [1],
+      "allow_unsafe": true
+    },
+    {
+      "pose": "sleep_02",
+      "joints": [0, 4, 5],
+      "allow_unsafe": true
+    }
+  ]
+}
