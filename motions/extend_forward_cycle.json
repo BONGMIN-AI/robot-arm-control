@@ -11,7 +11,14 @@
       "motion": "go_sleep_02"
     },
     {
-      "motion": "go_home_01"
+      "pose": "home",
+      "joints": [0, 1, 2, 3, 4],
+      "allow_unsafe": true
+    },
+    {
+      "pose": "home",
+      "joints": [5],
+      "allow_unsafe": true
     }
   ]
 }

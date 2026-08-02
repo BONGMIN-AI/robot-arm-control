@@ -18,7 +18,7 @@
     },
     {
       "pose": "sleep_02",
-      "joints": [0, 4, 5],
+      "joints": [0, 4],
       "allow_unsafe": true
     }
   ]
