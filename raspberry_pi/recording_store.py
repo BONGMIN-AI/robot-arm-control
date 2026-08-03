@@ -52,6 +52,13 @@ def load_recording(name, recording_dir=None):
     return path, data
 
 
+def list_recordings(recording_dir=None):
+    target_dir = Path(recording_dir) if recording_dir else default_recording_dir()
+    if not target_dir.exists():
+        return []
+    return sorted(path.stem for path in target_dir.glob("*.json"))
+
+
 def validate_recording_data(data, expected_name=None):
     samples = data.get("samples")
     if not isinstance(samples, list) or not samples:

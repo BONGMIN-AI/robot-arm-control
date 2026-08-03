@@ -21,6 +21,7 @@ setup(
         "console_scripts": [
             "arm_play = robot_arm_bringup.arm_play:main",
             "arm_record = robot_arm_bringup.arm_record:main",
+            "arm_record_list = robot_arm_bringup.arm_record_list:main",
             "arm_record_play = robot_arm_bringup.arm_record_play:main",
             "arm_go_pose = robot_arm_bringup.arm_go_pose:main",
             "arm_list_poses = robot_arm_bringup.arm_list_poses:main",
