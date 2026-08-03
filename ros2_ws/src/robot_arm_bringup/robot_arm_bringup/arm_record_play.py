@@ -24,6 +24,7 @@ def main():
     parser.add_argument("--grip-hold", type=float, default=1.0)
     parser.add_argument("--grip-tolerance", type=float, default=2.0)
     parser.add_argument("--grip-timeout", type=float, default=4.0)
+    parser.add_argument("--sample-stride", type=int, default=1)
     parser.add_argument("--mock", action="store_true")
     parser.add_argument("--recording-dir", default=str(REPO_ROOT / "recordings"))
     parser.add_argument("--allow-unsafe", action="store_true")
@@ -44,6 +45,7 @@ def main():
             args.grip_hold,
             args.grip_tolerance,
             args.grip_timeout,
+            args.sample_stride,
             args.allow_unsafe,
         )
     finally:

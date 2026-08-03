@@ -287,6 +287,7 @@ arm-go-pose sleep_01 --allow-unsafe --step 1.0 --delay 0.03 --speed 80
 - 녹화 중 `o`는 gripper open 이벤트, `c`는 gripper close 이벤트, `q`는 녹화 종료다.
 - `arm-record-play 이름`은 홈 자세 복귀 후 녹화 시작 각도로 이동하고, 그 다음 기록 흐름을 재생한다.
 - `arm-record-play`에서 `o/c` 이벤트는 J5가 목표 각도에 도달할 때까지 확인한 뒤 hold 시간을 기다린다.
+- `arm-record-play 이름 --sample-stride 3`은 녹화 샘플 3개 중 1개 정도만 보내 전송 수를 줄인다. 첫 샘플, 이벤트 샘플, 마지막 샘플은 유지한다.
 - 손으로 티칭 자세를 만들 때만 토크를 끄고, 팔이 갑자기 처지지 않게 받친다.
 - 포트가 `/dev/ttyUSB1` 등으로 바뀌면 alias의 `device:=...`를 수정한다.
 

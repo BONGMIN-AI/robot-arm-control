@@ -43,6 +43,19 @@ def validate_grip_settings(grip_open, grip_close, grip_hold, grip_tolerance, gri
         raise ValueError("--grip-timeout must be greater than 0.")
 
 
+def validate_sample_stride(sample_stride):
+    if sample_stride < 1:
+        raise ValueError("--sample-stride must be greater than or equal to 1.")
+
+
+def should_send_sample(sample_index, sample_t, sample_count, events, sample_stride):
+    if sample_index == 0 or sample_index == sample_count - 1:
+        return True
+    if sample_stride <= 1 or sample_index % sample_stride == 0:
+        return True
+    return any(float(event["t"]) <= sample_t for event in events)
+
+
 def wait_for_grip(driver, target, tolerance, hold_sec, timeout_sec):
     deadline = time.monotonic() + timeout_sec
     while True:
@@ -82,11 +95,13 @@ def play_recording(
     grip_hold,
     grip_tolerance,
     grip_timeout,
+    sample_stride,
     allow_unsafe=False,
 ):
     path, data = load_recording(name, recording_dir)
     print(f"recording: {path}")
     validate_grip_settings(grip_open, grip_close, grip_hold, grip_tolerance, grip_timeout)
+    validate_sample_stride(sample_stride)
     if not allow_unsafe:
         validate_recording_limits(data, grip_open, grip_close)
 
@@ -107,8 +122,10 @@ def play_recording(
     playback_start = time.monotonic()
     previous_t = 0.0
 
-    for sample in data["samples"]:
+    samples = data["samples"]
+    for sample_index, sample in enumerate(samples):
         sample_t = float(sample["t"])
+        triggered_event = False
         while next_event_index < len(events) and float(events[next_event_index]["t"]) <= sample_t:
             event = events[next_event_index]
             target = grip_open if event["type"] == "open" else grip_close
@@ -120,12 +137,18 @@ def play_recording(
             playback_start += time.monotonic() - hold_started
             print(f"event done: J5={reached:.2f}")
             next_event_index += 1
+            triggered_event = True
+
+        if not triggered_event and not should_send_sample(
+            sample_index, sample_t, len(samples), events[next_event_index:], sample_stride
+        ):
+            previous_t = sample_t
+            continue
 
         target_time = playback_start + sample_t
         remaining = target_time - time.monotonic()
         if remaining > 0:
             time.sleep(remaining)
-
         send_recorded_arm_pose(driver, sample["joints"], speed)
         previous_t = sample_t
 
@@ -156,6 +179,7 @@ def main():
     parser.add_argument("--grip-hold", type=float, default=1.0)
     parser.add_argument("--grip-tolerance", type=float, default=2.0)
     parser.add_argument("--grip-timeout", type=float, default=4.0)
+    parser.add_argument("--sample-stride", type=int, default=1)
     parser.add_argument("--mock", action="store_true")
     parser.add_argument("--recording-dir", default=None)
     parser.add_argument("--allow-unsafe", action="store_true")
@@ -176,6 +200,7 @@ def main():
             args.grip_hold,
             args.grip_tolerance,
             args.grip_timeout,
+            args.sample_stride,
             args.allow_unsafe,
         )
     finally:

@@ -109,6 +109,7 @@ arm-send 150 150 150 150 150 150
 - [x] 녹화 동작 재생 명령 `arm-record-play` 추가
 - [x] `arm-record-play` 실행 순서 정리: 홈 복귀 -> 녹화 시작 각도 이동 -> 기록 흐름 재생
 - [x] 그리퍼 이벤트 `o=open`, `c=close` 재생 로직 추가
+- [x] 녹화 재생 전송 수를 줄이는 `--sample-stride` 옵션 추가
 
 필요 코드 후보:
 
@@ -134,6 +135,7 @@ ros2_ws/src/robot_arm_bringup/robot_arm_bringup/status_publisher.py
 - 녹화 재생은 어떤 자세에서 시작하든 홈 자세를 거친 뒤 녹화 시작 각도로 이동한다.
 - `o/c` 이벤트는 J5가 목표 각도에 도달한 것을 확인하고 `GRIP_HOLD`만큼 기다린 뒤 다음 팔 움직임으로 넘어간다.
 - 그리퍼 J5의 녹화 재생 범위는 팔 관절 제한과 분리해서 `0..150`도로 고정한다. 기본값은 `GRIP_OPEN=0`, `GRIP_CLOSE=150`이다.
+- `--sample-stride N`은 첫 샘플, 이벤트 샘플, 마지막 샘플은 유지하면서 녹화 샘플 전송 수를 줄인다.
 
 ## Phase 3. Raspberry Pi 모터 서버
 
