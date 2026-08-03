@@ -28,6 +28,17 @@ def validate_recording_limits(data, grip_open, grip_close):
     validate_angle("J5", grip_close)
 
 
+def validate_grip_settings(grip_open, grip_close, grip_hold, grip_tolerance, grip_timeout):
+    validate_angle("J5", grip_open)
+    validate_angle("J5", grip_close)
+    if grip_hold < 0:
+        raise ValueError("--grip-hold must be greater than or equal to 0.")
+    if grip_tolerance <= 0:
+        raise ValueError("--grip-tolerance must be greater than 0.")
+    if grip_timeout <= 0:
+        raise ValueError("--grip-timeout must be greater than 0.")
+
+
 def wait_for_grip(driver, target, tolerance, hold_sec, timeout_sec):
     deadline = time.monotonic() + timeout_sec
     while True:
@@ -49,6 +60,12 @@ def send_pose(driver, pose, speed):
         driver.set_angle(servo_id, angle)
 
 
+def send_recorded_arm_pose(driver, j0_to_j4, speed):
+    for servo_id, angle in enumerate(j0_to_j4):
+        driver.set_speed(servo_id, speed)
+        driver.set_angle(servo_id, angle)
+
+
 def play_recording(
     driver,
     name,
@@ -65,6 +82,7 @@ def play_recording(
 ):
     path, data = load_recording(name, recording_dir)
     print(f"recording: {path}")
+    validate_grip_settings(grip_open, grip_close, grip_hold, grip_tolerance, grip_timeout)
     if not allow_unsafe:
         validate_recording_limits(data, grip_open, grip_close)
 
@@ -82,7 +100,6 @@ def play_recording(
 
     events = sorted(data.get("events", []), key=lambda item: item["t"])
     next_event_index = 0
-    gripper_angle = grip_open
     playback_start = time.monotonic()
     previous_t = 0.0
 
@@ -98,7 +115,6 @@ def play_recording(
             reached = wait_for_grip(driver, target, grip_tolerance, grip_hold, grip_timeout)
             playback_start += time.monotonic() - hold_started
             print(f"event done: J5={reached:.2f}")
-            gripper_angle = target
             next_event_index += 1
 
         target_time = playback_start + sample_t
@@ -106,8 +122,7 @@ def play_recording(
         if remaining > 0:
             time.sleep(remaining)
 
-        pose = full_pose(sample["joints"], gripper_angle)
-        send_pose(driver, pose, speed)
+        send_recorded_arm_pose(driver, sample["joints"], speed)
         previous_t = sample_t
 
     while next_event_index < len(events):
