@@ -24,7 +24,7 @@ These are conservative first-pass limits, not final mechanical limits.
 | `J2` | `130..200` |
 | `J3` | `130..200` |
 | `J4` | `0..300` |
-| `J5` | `90..210` |
+| `J5` | gripper event range `0..150` |
 
 ## Power
 
@@ -32,4 +32,3 @@ These are conservative first-pass limits, not final mechanical limits.
 - Grounds must be common.
 - Confirm each servo supports the supplied voltage.
 - If a servo stops responding after load, check for overload, over-temperature, or low-voltage protection.
-

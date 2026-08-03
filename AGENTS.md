@@ -293,8 +293,8 @@ arm-go-pose sleep_01 --allow-unsafe --step 1.0 --delay 0.03 --speed 80
 그리퍼 재생 기본값은 alias나 환경 변수에서 바꿀 수 있게 둔다.
 
 ```bash
-export GRIP_OPEN=110
-export GRIP_CLOSE=130
+export GRIP_OPEN=0
+export GRIP_CLOSE=150
 export GRIP_HOLD=1.0
 export GRIP_TOLERANCE=2.0
 ```
@@ -315,7 +315,7 @@ arm-record-delete() {
 }
 
 arm-record-play() {
-  cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_record_play --device "${ARM_DEVICE:-/dev/ttyUSB0}" --step "${ARM_STEP:-1.0}" --delay "${ARM_DELAY:-0.03}" --speed "${ARM_SPEED:-80}" --grip-open "${GRIP_OPEN:-110}" --grip-close "${GRIP_CLOSE:-130}" --grip-hold "${GRIP_HOLD:-1.0}" --grip-tolerance "${GRIP_TOLERANCE:-2.0}" "$@"
+  cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_record_play --device "${ARM_DEVICE:-/dev/ttyUSB0}" --step "${ARM_STEP:-1.0}" --delay "${ARM_DELAY:-0.03}" --speed "${ARM_SPEED:-80}" --grip-open "${GRIP_OPEN:-0}" --grip-close "${GRIP_CLOSE:-150}" --grip-hold "${GRIP_HOLD:-1.0}" --grip-tolerance "${GRIP_TOLERANCE:-2.0}" "$@"
 }
 ```
 

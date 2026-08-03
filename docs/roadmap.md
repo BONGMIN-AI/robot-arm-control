@@ -133,6 +133,7 @@ ros2_ws/src/robot_arm_bringup/robot_arm_bringup/status_publisher.py
 - 손으로 만든 J0~J4 흐름을 `recordings/<name>.json`에 저장할 수 있다.
 - 녹화 재생은 어떤 자세에서 시작하든 홈 자세를 거친 뒤 녹화 시작 각도로 이동한다.
 - `o/c` 이벤트는 J5가 목표 각도에 도달한 것을 확인하고 `GRIP_HOLD`만큼 기다린 뒤 다음 팔 움직임으로 넘어간다.
+- 그리퍼 J5의 녹화 재생 범위는 팔 관절 제한과 분리해서 `0..150`도로 고정한다. 기본값은 `GRIP_OPEN=0`, `GRIP_CLOSE=150`이다.
 
 ## Phase 3. Raspberry Pi 모터 서버
 

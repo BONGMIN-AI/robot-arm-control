@@ -14,6 +14,8 @@ from torque_control import read_current_pose
 
 HOME_POSE = [150.0, 150.0, 150.0, 150.0, 150.0, 150.0]
 RECORD_JOINT_COUNT = 5
+GRIP_MIN_DEG = 0.0
+GRIP_MAX_DEG = 150.0
 
 
 def full_pose(j0_to_j4, gripper_angle):
@@ -24,13 +26,15 @@ def validate_recording_limits(data, grip_open, grip_close):
     for sample_index, sample in enumerate(data["samples"]):
         for joint_index, angle in enumerate(sample["joints"]):
             validate_angle(f"J{joint_index}", angle)
-    validate_angle("J5", grip_open)
-    validate_angle("J5", grip_close)
 
 
 def validate_grip_settings(grip_open, grip_close, grip_hold, grip_tolerance, grip_timeout):
-    validate_angle("J5", grip_open)
-    validate_angle("J5", grip_close)
+    for label, angle in (("--grip-open", grip_open), ("--grip-close", grip_close)):
+        if not GRIP_MIN_DEG <= angle <= GRIP_MAX_DEG:
+            raise ValueError(
+                f"{label} angle {angle} is outside gripper range "
+                f"{GRIP_MIN_DEG:.0f}..{GRIP_MAX_DEG:.0f}"
+            )
     if grip_hold < 0:
         raise ValueError("--grip-hold must be greater than or equal to 0.")
     if grip_tolerance <= 0:
@@ -147,8 +151,8 @@ def main():
     parser.add_argument("--step", type=float, default=1.0)
     parser.add_argument("--delay", type=float, default=0.08)
     parser.add_argument("--speed", type=int, default=50)
-    parser.add_argument("--grip-open", type=float, default=110.0)
-    parser.add_argument("--grip-close", type=float, default=130.0)
+    parser.add_argument("--grip-open", type=float, default=0.0)
+    parser.add_argument("--grip-close", type=float, default=150.0)
     parser.add_argument("--grip-hold", type=float, default=1.0)
     parser.add_argument("--grip-tolerance", type=float, default=2.0)
     parser.add_argument("--grip-timeout", type=float, default=4.0)
