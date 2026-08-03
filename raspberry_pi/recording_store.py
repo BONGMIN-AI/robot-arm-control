@@ -59,6 +59,14 @@ def list_recordings(recording_dir=None):
     return sorted(path.stem for path in target_dir.glob("*.json"))
 
 
+def delete_recording(name, recording_dir=None):
+    path = recording_path(name, recording_dir)
+    if not path.exists():
+        raise FileNotFoundError(f"No saved recording: {name}")
+    path.unlink()
+    return path
+
+
 def validate_recording_data(data, expected_name=None):
     samples = data.get("samples")
     if not isinstance(samples, list) or not samples:

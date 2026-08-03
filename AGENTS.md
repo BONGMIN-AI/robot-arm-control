@@ -283,6 +283,7 @@ arm-go-pose sleep_01 --allow-unsafe --step 1.0 --delay 0.03 --speed 80
 - `sleep_01` 재생 기본 후보는 `--allow-unsafe --step 1.0 --delay 0.03 --speed 80`이다.
 - `arm-record 이름`은 스페이스바를 누른 순간부터 J0~J4 손 티칭 흐름을 `recordings/이름.json`에 저장한다.
 - `arm-record-list`는 저장된 녹화 이름 목록을 보여준다.
+- `arm-record-delete 이름`은 저장된 녹화 `recordings/이름.json`을 삭제한다.
 - 녹화 중 `o`는 gripper open 이벤트, `c`는 gripper close 이벤트, `q`는 녹화 종료다.
 - `arm-record-play 이름`은 홈 자세 복귀 후 녹화 시작 각도로 이동하고, 그 다음 기록 흐름을 재생한다.
 - `arm-record-play`에서 `o/c` 이벤트는 J5가 목표 각도에 도달할 때까지 확인한 뒤 hold 시간을 기다린다.
@@ -307,6 +308,10 @@ arm-record() {
 
 arm-record-list() {
   cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_record_list "$@"
+}
+
+arm-record-delete() {
+  cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_record_delete "$@"
 }
 
 arm-record-play() {
