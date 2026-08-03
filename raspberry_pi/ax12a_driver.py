@@ -1,3 +1,6 @@
+import time
+
+
 class Ax12aDriver:
     """DYNAMIXEL AX-12A driver wrapper.
 
@@ -16,10 +19,13 @@ class Ax12aDriver:
 
     PROTOCOL_VERSION = 1.0
     DEFAULT_BAUDRATE = 1_000_000
+    DEFAULT_RETRIES = 3
+    RETRY_DELAY_SEC = 0.02
 
-    def __init__(self, device="/dev/ttyUSB0", baudrate=DEFAULT_BAUDRATE):
+    def __init__(self, device="/dev/ttyUSB0", baudrate=DEFAULT_BAUDRATE, retries=DEFAULT_RETRIES):
         self.device = device
         self.baudrate = baudrate
+        self.retries = int(retries)
         self.port_handler = None
         self.packet_handler = None
 
@@ -61,30 +67,62 @@ class Ax12aDriver:
         return self._read1(servo_id, self.ADDR_PRESENT_VOLTAGE) / 10.0
 
     def _write1(self, servo_id, address, value):
-        result, error = self.packet_handler.write1ByteTxRx(
-            self.port_handler, servo_id, address, int(value)
-        )
-        self._check(result, error, servo_id, address)
+        def operation():
+            return self.packet_handler.write1ByteTxRx(
+                self.port_handler, servo_id, address, int(value)
+            )
+
+        self._with_retries(operation, servo_id, address)
 
     def _write2(self, servo_id, address, value):
-        result, error = self.packet_handler.write2ByteTxRx(
-            self.port_handler, servo_id, address, int(value)
-        )
-        self._check(result, error, servo_id, address)
+        def operation():
+            return self.packet_handler.write2ByteTxRx(
+                self.port_handler, servo_id, address, int(value)
+            )
+
+        self._with_retries(operation, servo_id, address)
 
     def _read1(self, servo_id, address):
-        value, result, error = self.packet_handler.read1ByteTxRx(
-            self.port_handler, servo_id, address
-        )
-        self._check(result, error, servo_id, address)
+        def operation():
+            value, result, error = self.packet_handler.read1ByteTxRx(
+                self.port_handler, servo_id, address
+            )
+            return result, error, value
+
+        value = self._with_retries(operation, servo_id, address)
         return value
 
     def _read2(self, servo_id, address):
-        value, result, error = self.packet_handler.read2ByteTxRx(
-            self.port_handler, servo_id, address
-        )
-        self._check(result, error, servo_id, address)
+        def operation():
+            value, result, error = self.packet_handler.read2ByteTxRx(
+                self.port_handler, servo_id, address
+            )
+            return result, error, value
+
+        value = self._with_retries(operation, servo_id, address)
         return value
+
+    def _with_retries(self, operation, servo_id, address):
+        attempts = max(1, self.retries)
+        last_result = 0
+        last_error = 0
+        last_value = None
+        for attempt in range(1, attempts + 1):
+            response = operation()
+            if len(response) == 2:
+                result, error = response
+                value = None
+            else:
+                result, error, value = response
+            if result == 0 and error == 0:
+                return value
+            last_result = result
+            last_error = error
+            last_value = value
+            if attempt < attempts:
+                time.sleep(self.RETRY_DELAY_SEC)
+        self._check(last_result, last_error, servo_id, address)
+        return last_value
 
     def _check(self, result, error, servo_id, address):
         if result != 0:
@@ -102,4 +140,3 @@ def angle_to_ax12_position(angle_deg):
 
 def ax12_position_to_angle(position):
     return float(position) / 1023.0 * 300.0
-
