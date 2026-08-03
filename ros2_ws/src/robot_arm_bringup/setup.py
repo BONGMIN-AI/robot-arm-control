@@ -20,6 +20,8 @@ setup(
     entry_points={
         "console_scripts": [
             "arm_play = robot_arm_bringup.arm_play:main",
+            "arm_record = robot_arm_bringup.arm_record:main",
+            "arm_record_play = robot_arm_bringup.arm_record_play:main",
             "arm_go_pose = robot_arm_bringup.arm_go_pose:main",
             "arm_list_poses = robot_arm_bringup.arm_list_poses:main",
             "arm_save_pose = robot_arm_bringup.arm_save_pose:main",

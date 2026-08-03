@@ -103,6 +103,10 @@ arm-send 150 150 150 150 150 150
 - [x] `arm-save-pose` alias를 Jetson `~/.bashrc`에 등록
 - [ ] `arm-list-poses` alias를 Jetson `~/.bashrc`에 등록
 - [ ] `arm-go-pose` alias를 Jetson `~/.bashrc`에 등록
+- [x] 연속 티칭 녹화 명령 `arm-record` 추가
+- [x] 녹화 동작 재생 명령 `arm-record-play` 추가
+- [x] `arm-record-play` 실행 순서 정리: 홈 복귀 -> 녹화 시작 각도 이동 -> 기록 흐름 재생
+- [x] 그리퍼 이벤트 `o=open`, `c=close` 재생 로직 추가
 
 필요 코드 후보:
 
@@ -112,6 +116,9 @@ raspberry_pi/torque_control.py           # 추가됨
 raspberry_pi/pose_store.py               # 추가됨
 raspberry_pi/list_poses.py               # 추가됨
 raspberry_pi/go_pose.py                  # 추가됨
+raspberry_pi/recording_store.py          # 추가됨
+raspberry_pi/record_motion.py            # 추가됨
+raspberry_pi/record_play.py              # 추가됨
 ros2_ws/src/robot_arm_bringup/robot_arm_bringup/status_publisher.py
 ```
 
@@ -119,6 +126,9 @@ ros2_ws/src/robot_arm_bringup/robot_arm_bringup/status_publisher.py
 
 - 각 모터의 현재 각도, 전압, 온도를 읽을 수 있다.
 - J1이 뜨거워지거나 전압이 낮을 때 바로 확인할 수 있다.
+- 손으로 만든 J0~J4 흐름을 `recordings/<name>.json`에 저장할 수 있다.
+- 녹화 재생은 어떤 자세에서 시작하든 홈 자세를 거친 뒤 녹화 시작 각도로 이동한다.
+- `o/c` 이벤트는 J5가 목표 각도에 도달한 것을 확인하고 `GRIP_HOLD`만큼 기다린 뒤 다음 팔 움직임으로 넘어간다.
 
 ## Phase 3. Raspberry Pi 모터 서버
 

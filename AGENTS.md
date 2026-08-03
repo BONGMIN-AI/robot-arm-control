@@ -281,8 +281,33 @@ arm-go-pose sleep_01 --allow-unsafe --step 1.0 --delay 0.03 --speed 80
 - `arm-go-pose 이름`은 현재 자세에서 저장된 포즈로 보간 이동한다.
 - `arm-go-pose 이름 --allow-unsafe`는 소프트웨어 관절 제한을 적용하지 않고 저장 각도를 그대로 재생한다.
 - `sleep_01` 재생 기본 후보는 `--allow-unsafe --step 1.0 --delay 0.03 --speed 80`이다.
+- `arm-record 이름`은 스페이스바를 누른 순간부터 J0~J4 손 티칭 흐름을 `recordings/이름.json`에 저장한다.
+- 녹화 중 `o`는 gripper open 이벤트, `c`는 gripper close 이벤트, `q`는 녹화 종료다.
+- `arm-record-play 이름`은 홈 자세 복귀 후 녹화 시작 각도로 이동하고, 그 다음 기록 흐름을 재생한다.
+- `arm-record-play`에서 `o/c` 이벤트는 J5가 목표 각도에 도달할 때까지 확인한 뒤 hold 시간을 기다린다.
 - 손으로 티칭 자세를 만들 때만 토크를 끄고, 팔이 갑자기 처지지 않게 받친다.
 - 포트가 `/dev/ttyUSB1` 등으로 바뀌면 alias의 `device:=...`를 수정한다.
+
+그리퍼 재생 기본값은 alias나 환경 변수에서 바꿀 수 있게 둔다.
+
+```bash
+export GRIP_OPEN=110
+export GRIP_CLOSE=130
+export GRIP_HOLD=1.0
+export GRIP_TOLERANCE=2.0
+```
+
+Jetson에서는 다음 함수 이름을 사용한다.
+
+```bash
+arm-record() {
+  cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_record --device "${ARM_DEVICE:-/dev/ttyUSB0}" "$@"
+}
+
+arm-record-play() {
+  cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_record_play --device "${ARM_DEVICE:-/dev/ttyUSB0}" --step "${ARM_STEP:-1.0}" --delay "${ARM_DELAY:-0.03}" --speed "${ARM_SPEED:-80}" --grip-open "${GRIP_OPEN:-110}" --grip-close "${GRIP_CLOSE:-130}" --grip-hold "${GRIP_HOLD:-1.0}" --grip-tolerance "${GRIP_TOLERANCE:-2.0}" "$@"
+}
+```
 
 ## 안전 주의
 
