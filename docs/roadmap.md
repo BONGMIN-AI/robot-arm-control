@@ -105,10 +105,12 @@ arm-send 150 150 150 150 150 150
 - [ ] `arm-list-poses` alias를 Jetson `~/.bashrc`에 등록
 - [ ] `arm-go-pose` alias를 Jetson `~/.bashrc`에 등록
 - [x] 연속 티칭 녹화 명령 `arm-record` 추가
+- [x] `arm-record` 시작 시 홈 복귀 후 토크 off 자동 실행
 - [x] 저장 녹화 목록 명령 `arm-record-list` 추가
 - [x] 저장 녹화 삭제 명령 `arm-record-delete` 추가
 - [x] 녹화 동작 재생 명령 `arm-record-play` 추가
 - [x] `arm-record-play` 실행 순서 정리: 홈 복귀 -> 녹화 시작 각도 이동 -> 기록 흐름 재생
+- [x] `arm-record-play` 종료 후 홈 자동 복귀 추가
 - [x] 그리퍼 이벤트 `o=open`, `c=close` 재생 로직 추가
 - [x] 녹화 재생 전송 수를 줄이는 `--sample-stride` 옵션 추가
 

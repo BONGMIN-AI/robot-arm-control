@@ -164,6 +164,8 @@ def play_recording(
 
     final_pose = read_current_pose(driver)
     print("final:", " ".join(f"{angle:.2f}" for angle in final_pose))
+    print("move: home after recording")
+    go_pose(driver, HOME_POSE, step_deg, delay_sec, speed, allow_unsafe)
 
 
 def main():

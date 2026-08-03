@@ -8,6 +8,7 @@ import tty
 
 from read_status import JOINT_COUNT, load_driver
 from recording_store import save_recording
+from torque_control import move_home, set_torque
 
 
 RECORD_JOINT_COUNT = 5
@@ -34,7 +35,16 @@ def read_record_pose(driver):
     return [float(driver.get_angle(servo_id)) for servo_id in range(RECORD_JOINT_COUNT)]
 
 
-def record_motion(driver, name, recording_dir, hz):
+def prepare_for_hand_recording(driver, step_deg, delay_sec, speed):
+    print("[DON'T TOUCH while torque off]")
+    move_home(driver, step_deg, delay_sec, speed)
+    set_torque(driver, False)
+    print("torque: off")
+
+
+def record_motion(driver, name, recording_dir, hz, step_deg, delay_sec, speed):
+    prepare_for_hand_recording(driver, step_deg, delay_sec, speed)
+
     period = 1.0 / hz
     samples = []
     events = []
@@ -90,6 +100,9 @@ def main():
     parser.add_argument("--device", default="/dev/ttyUSB0")
     parser.add_argument("--baudrate", type=int, default=1_000_000)
     parser.add_argument("--hz", type=float, default=20.0)
+    parser.add_argument("--step", type=float, default=1.0)
+    parser.add_argument("--delay", type=float, default=0.08)
+    parser.add_argument("--speed", type=int, default=50)
     parser.add_argument("--mock", action="store_true")
     parser.add_argument("--recording-dir", default=None)
     args = parser.parse_args()
@@ -102,7 +115,15 @@ def main():
     driver = load_driver(args.mock, args.device, args.baudrate)
     driver.connect()
     try:
-        record_motion(driver, args.name, args.recording_dir, args.hz)
+        record_motion(
+            driver,
+            args.name,
+            args.recording_dir,
+            args.hz,
+            args.step,
+            args.delay,
+            args.speed,
+        )
     finally:
         driver.close()
 
