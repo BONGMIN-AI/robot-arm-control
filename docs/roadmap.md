@@ -88,6 +88,7 @@ arm-send 150 150 150 150 150 150
 - [x] 현재 자세를 `poses/<name>.json`으로 저장하는 `arm_save_pose` 명령 추가
 - [x] 저장된 포즈 목록을 보는 `arm_list_poses` 명령 추가
 - [x] 저장된 포즈로 이동하는 `arm_go_pose` 명령 추가
+- [x] `arm-play` 저장 동작 목록을 보는 `arm-list-plays` 명령 추가
 - [x] 티칭 포즈 원본 각도 재생용 `arm_go_pose --allow-unsafe` 옵션 추가
 - [x] `sleep_01` 재생 파라미터 후보 결정: `--step 1.0 --delay 0.03 --speed 80`
 - [x] Jetson에서 실제 장치 `arm-status` 실행 확인
@@ -119,6 +120,7 @@ raspberry_pi/torque_control.py           # 추가됨
 raspberry_pi/pose_store.py               # 추가됨
 raspberry_pi/list_poses.py               # 추가됨
 raspberry_pi/go_pose.py                  # 추가됨
+raspberry_pi/list_motions.py             # 추가됨
 raspberry_pi/list_recordings.py          # 추가됨
 raspberry_pi/delete_recording.py         # 추가됨
 raspberry_pi/recording_store.py          # 추가됨

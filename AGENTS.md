@@ -280,6 +280,7 @@ arm-go-pose sleep_01 --allow-unsafe --step 1.0 --delay 0.03 --speed 80
 - `arm-list-poses`는 저장된 포즈 이름 목록을 보여준다.
 - `arm-go-pose 이름`은 현재 자세에서 저장된 포즈로 보간 이동한다.
 - `arm-go-pose 이름 --allow-unsafe`는 소프트웨어 관절 제한을 적용하지 않고 저장 각도를 그대로 재생한다.
+- `arm-list-plays`는 `arm-play`로 실행할 수 있는 저장 동작 이름 목록을 보여준다.
 - `sleep_01` 재생 기본 후보는 `--allow-unsafe --step 1.0 --delay 0.03 --speed 80`이다.
 - `arm-record 이름`은 스페이스바를 누른 순간부터 J0~J4 손 티칭 흐름을 `recordings/이름.json`에 저장한다.
 - `arm-record-list`는 저장된 녹화 이름 목록을 보여준다.
@@ -313,6 +314,10 @@ arm-record-list() {
 
 arm-record-delete() {
   cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_record_delete "$@"
+}
+
+arm-list-plays() {
+  cd ~/robot-arm-control/ros2_ws && source /opt/ros/humble/setup.bash && export ROBOT_ARM_REPO=~/robot-arm-control && source install/setup.bash && ros2 run robot_arm_bringup arm_list_plays "$@"
 }
 
 arm-record-play() {
