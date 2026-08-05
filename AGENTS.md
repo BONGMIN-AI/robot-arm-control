@@ -364,6 +364,23 @@ arm-record-play() {
 
 ## 다음 구현 방향
 
+### 최신 우선순위 (2026-08-05)
+
+아래 기존 우선순위보다 이 결정이 우선한다.
+
+1. 과열/전압/통신 에러 로그 출력 개선
+2. `arm-record` 기반 안전 경계 티칭 가이드와 관절 제한 후보 정리
+3. 보유 STL + DH 실측 치수 기반의 최소 URDF/RViz 모델 완성 및 시각 검증
+4. NHN Cloud Docker GPU 컨테이너의 Isaac Sim + ROS2 환경 준비
+5. 역기구학 구현
+6. Raspberry Pi HTTP 모터 서버 분리는 완성품 구조가 안정된 뒤 마지막에 재검토
+
+URDF/RViz 현재 상태:
+
+- `ros2_ws/src/robot_arm_description/`에 xacro, launch, `meshes/printed`, `meshes/vendor`를 구성했다.
+- `colcon build`, `source install/setup.bash`는 Jetson에서 완료했다.
+- RViz 창/모델의 시각적 검증은 아직 하지 않았다.
+
 다음 우선순위:
 
 1. Raspberry Pi를 같은 Wi-Fi의 가벼운 HTTP 모터 서버로 만들기

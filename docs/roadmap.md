@@ -3,6 +3,29 @@
 이 문서는 앞으로 로봇암 프로젝트를 진행할 때 따라가는 지도다.  
 새 세션을 시작하면 `AGENTS.md`를 읽고, 이어서 이 파일을 읽은 뒤 현재 단계부터 진행한다.
 
+## 현재 기준 (2026-08-05)
+
+이 섹션이 아래 이전 phase의 우선순위보다 우선한다.
+
+- [x] Jetson AGX Orin에서 ROS2 Humble 기반 실제 AX-12A 제어, 상태 조회, 포즈/녹화 재생 성공
+- [x] `arm-record`로 여러 실제 동작 녹화 및 재생 성공
+- [x] `robot_arm_description` 패키지 생성
+- [x] xacro, launch, 보유 STL mesh 배치 완료
+- [x] `colcon build`와 `source install/setup.bash` 완료
+- [ ] RViz 화면에서 robot model 및 joint 움직임을 시각적으로 확인
+- [ ] STL mesh와 DH 기반 joint origin을 J0~J5까지 확장
+- [ ] 과열/전압/통신 에러 로그 개선
+- [ ] `arm-record` 안전 경계 티칭 가이드 작성 및 관절 제한 후보 추출
+- [ ] Isaac Sim + ROS2 환경을 NHN Cloud Docker GPU 컨테이너에 구성
+- [ ] 역기구학 구현 및 작은 목표 위치 테스트
+
+현재 결정:
+
+- Raspberry Pi HTTP 모터 서버 분리는 중지한다. 완성품 구조가 안정된 마지막 단계에서 재검토한다.
+- J1 과부하 보호 로직은 보류한다. 현재는 과열/전압/통신 에러를 읽기 쉬운 로그로 출력하는 개선만 남긴다.
+- URDF는 보유 STL과 DH 실측 치수로 만든 최소 모델을 우선한다. 나사, 너트, 베어링은 제외한다.
+- RViz는 아직 `source install/setup.bash`까지만 확인했다. 시각 검증은 미완료다.
+
 ## 현재 상태
 
 완료:
