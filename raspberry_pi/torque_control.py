@@ -64,6 +64,7 @@ def main():
 
         if not args.no_home:
             move_home(driver, args.step, args.delay, args.speed)
+            time.sleep(1.0)
         set_torque(driver, False)
         print("torque: off")
     finally:
