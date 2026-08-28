@@ -13,18 +13,20 @@
 - Keep one hand near power shutoff during early tests.
 - Recheck servo temperature after high-load poses.
 
-## Initial Joint Limits
+## Configured Joint Limits
 
-These are conservative first-pass limits, not final mechanical limits.
+These limits match `kinematics/joint_config.py` and the URDF model. Saved
+teaching poses outside these ranges require the explicit `--allow-unsafe`
+override and should only be replayed after hardware clearance is confirmed.
 
-| Joint | Initial range |
+| Joint | Configured range |
 | --- | --- |
-| `J0` | `120..180` |
-| `J1` | `150..185` |
-| `J2` | `130..200` |
-| `J3` | `130..200` |
+| `J0` | `0..300` |
+| `J1` | `50..250` |
+| `J2` | `0..300` |
+| `J3` | `0..300` |
 | `J4` | `0..300` |
-| `J5` | gripper event range `0..150` |
+| `J5` | `0..150` |
 
 ## Power
 

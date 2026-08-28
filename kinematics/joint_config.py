@@ -1,13 +1,14 @@
 SERVO_CENTER_DEG = 150
 
-# Conservative first-pass limits. Tighten or expand after mechanical testing.
+# Configured servo limits shared by planners and motor-control commands.
+# J5 is restricted to the gripper's verified 0..150 degree range.
 JOINT_LIMITS = {
-    "J0": (120, 180),
-    "J1": (150, 185),
-    "J2": (130, 200),
-    "J3": (130, 200),
+    "J0": (0, 300),
+    "J1": (50, 250),
+    "J2": (0, 300),
+    "J3": (0, 300),
     "J4": (0, 300),
-    "J5": (90, 210),
+    "J5": (0, 150),
 }
 
 
@@ -20,4 +21,3 @@ def validate_angle(joint_name, angle):
     low, high = JOINT_LIMITS[joint_name]
     if not low <= angle <= high:
         raise ValueError(f"{joint_name} angle {angle} is outside safe range {low}..{high}")
-
