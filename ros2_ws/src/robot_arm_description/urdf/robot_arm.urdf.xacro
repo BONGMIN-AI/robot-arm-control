@@ -1,0 +1,304 @@
+<?xml version="1.0"?>
+<robot name="robot_arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ══════ 실측 높이값: 여기만 고치면 연결된 origin이 전부 따라옴 ══════ -->
+  <xacro:property name="j0_y" value="0.01"/>
+  <xacro:property name="j0_z" value="0.085"/>
+  <xacro:property name="j1_z" value="0.049"/>
+  <xacro:property name="j2_z" value="0.1105"/>
+  <xacro:property name="j3_z" value="0.1105"/>
+  <xacro:property name="j4_z" value="0.066"/>
+  <xacro:property name="j5_z" value="0.0475"/>
+
+  <!-- ══════ Dynamixel Wizard2 기준 각도(도) — 중앙 150°, 범위 0~300° ══════ -->
+  <!-- 여기 숫자만 Wizard 재측정값으로 갱신하면 아래 limit 라디안 값이 전부 자동 재계산됨 -->
+  <xacro:property name="j0_deg_lo" value="0"/>   <xacro:property name="j0_deg_hi" value="300"/>
+  <xacro:property name="j1_deg_lo" value="50"/>  <xacro:property name="j1_deg_hi" value="250"/>
+  <xacro:property name="j2_deg_lo" value="0"/>   <xacro:property name="j2_deg_hi" value="300"/>
+  <xacro:property name="j3_deg_lo" value="0"/>   <xacro:property name="j3_deg_hi" value="300"/>
+  <xacro:property name="j4_deg_lo" value="0"/>   <xacro:property name="j4_deg_hi" value="300"/>
+  <xacro:property name="j5_deg_lo" value="0"/>   <xacro:property name="j5_deg_hi" value="150"/>
+
+  <!-- joint_5(그리퍼)의 실사용 서브범위: 0°=열림, 110°=닫힘 (하드웨어 리밋 0~150°보다 좁은 구간) -->
+  <xacro:property name="j5_open_deg" value="0"/>
+  <xacro:property name="j5_close_deg" value="110"/>
+  <xacro:property name="j5_open_rad" value="${(j5_open_deg-150)*pi/180}"/>
+  <xacro:property name="j5_close_rad" value="${(j5_close_deg-150)*pi/180}"/>
+
+  <!-- finger 한쪽이 벌어지는 최대거리(m) — 기존 prismatic limit(0.015)을 그대로 스트로크값으로 사용 -->
+  <xacro:property name="gripper_stroke" value="0.015"/>
+  <xacro:property name="gripper_mult" value="${gripper_stroke / (j5_close_rad - j5_open_rad)}"/>
+  <xacro:property name="gripper_offset" value="${-gripper_mult * j5_open_rad}"/>
+
+  <link name="base_link">
+   <visual>
+     <origin xyz="0 0 0" rpy="0 0 0"/>
+     <geometry>
+	<mesh filename="package://robot_arm_description/meshes/printed/Base_0_centered_binary.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="base_gray">
+       <color rgba="0.5 0.5 0.5 1.0"/>
+     </material>
+   </visual>
+
+   <visual>
+     <origin xyz="0 0 0.08" rpy="0 0 0"/>
+     <geometry>
+        <mesh filename="package://robot_arm_description/meshes/printed/Base_disk_centered_binary.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="base_gray">
+       <color rgba="0.55 0.55 0.55 1.0"/>
+     </material>
+   </visual>
+
+   <!--모터 j0 (joint_0과는 별도 실측값, 마운팅면 두께만큼 z가 달라서 독립 유지)-->
+   <visual>
+     <origin xyz="0 0.01 0.063" rpy="0 0 0"/>
+     <geometry>
+       <mesh filename="package://robot_arm_description/meshes/vendor/motor_binary_horizon_base.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="motor_black">
+       <color rgba="0.15 0.15 0.15 1.0"/>
+     </material>
+   </visual>
+  </link>
+
+  <joint name="joint_0" type="revolute">
+    <parent link="base_link"/>
+    <child link="link_0"/>
+    <origin xyz="0 ${j0_y} ${j0_z}" rpy="0 0 0"/>
+    <axis xyz="0 0 1.0"/>
+    <limit lower="${(j0_deg_lo-150)*pi/180}" upper="${(j0_deg_hi-150)*pi/180}" effort="1.0" velocity="1.0"/>
+  </joint>
+
+  <link name="link_0">
+   <visual>
+     <origin xyz="0 0 0.0035" rpy="0 0 1.5708"/>
+     <geometry>
+       <mesh filename="package://robot_arm_description/meshes/printed/link_0_centered_binary.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="link_blue">
+       <color rgba="0.7 0.7 0.7 1.0"/>
+     </material>
+   </visual>
+
+   <!--모터 j1: joint_1 origin과 동일 지점이라 j1_z 공유-->
+   <visual>
+     <origin xyz="0 0 ${j1_z}" rpy="0 0 0"/>
+     <geometry>
+       <mesh filename="package://robot_arm_description/meshes/vendor/motor_binary_vertical.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="motor_black">
+       <color rgba="0.15 0.15 0.15 1.0"/>
+     </material>
+   </visual>
+  </link>
+
+ <link name="link_1">
+   <visual>
+     <origin xyz="0 0 0" rpy="0 0 0"/>
+     <geometry>
+       <mesh filename="package://robot_arm_description/meshes/printed/link_1_2_joint_origin_centered_binary.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="link_gray">
+       <color rgba="0.7 0.7 0.7 1.0"/>
+     </material>
+   </visual>
+
+   <!--모터 j2: joint_2 origin과 동일 지점이라 j2_z 공유-->
+   <visual>
+     <origin xyz="0 0 ${j2_z}" rpy="0 0 0"/>
+     <geometry>
+       <mesh filename="package://robot_arm_description/meshes/vendor/motor_binary_vertical.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="motor_black">
+       <color rgba="0.15 0.15 0.15 1.0"/>
+     </material>
+   </visual>
+ </link>
+
+ <joint name="joint_1" type="revolute">
+   <parent link="link_0"/>
+   <child link="link_1"/>
+   <origin xyz="0 0 ${j1_z}" rpy="0 0 0"/>
+   <axis xyz="1 0 0"/>
+   <limit lower="${(j1_deg_lo-150)*pi/180}" upper="${(j1_deg_hi-150)*pi/180}" effort="1.0" velocity="1.0"/>
+ </joint>
+
+ <link name="link_2">
+   <visual>
+     <origin xyz="0 0 0" rpy="0 0 0"/>
+     <geometry>
+       <mesh filename="package://robot_arm_description/meshes/printed/link_1_2_joint_origin_centered_binary.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="link_gray">
+       <color rgba="0.7 0.7 0.7 1.0"/>
+     </material>
+   </visual>
+
+   <!--모터 j3: joint_3 origin과 동일 지점이라 j3_z 공유-->
+   <visual>
+     <origin xyz="0 0 ${j3_z}" rpy="0 0 0"/>
+     <geometry>
+       <mesh filename="package://robot_arm_description/meshes/vendor/motor_binary_vertical.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="motor_black">
+       <color rgba="0.15 0.15 0.15 1.0"/>
+     </material>
+   </visual>
+ </link>
+
+ <joint name="joint_2" type="revolute">
+   <parent link="link_1"/>
+   <child link="link_2"/>
+   <origin xyz="0 0 ${j2_z}" rpy="0 0 0"/>
+   <axis xyz="1 0 0"/>
+   <limit lower="${(j2_deg_lo-150)*pi/180}" upper="${(j2_deg_hi-150)*pi/180}" effort="1.0" velocity="1.0"/>
+ </joint>
+
+ <link name="link_3">
+   <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+     <geometry>
+       <mesh filename="package://robot_arm_description/meshes/printed/link_3_centered_binary.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="link_gray">
+       <color rgba="0.7 0.7 0.7 1.0"/>
+     </material>
+   </visual>
+
+   <!-- ① 요청 1번: 모터 j4 visual — joint_4 origin과 j4_z 하나로 공유 -->
+   <visual>
+     <origin xyz="0 0 ${j4_z}" rpy="0 0 0"/>
+     <geometry>
+       <mesh filename="package://robot_arm_description/meshes/vendor/motor_binary_horizon.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="motor_black">
+       <color rgba="0.15 0.15 0.15 1.0"/>
+     </material>
+   </visual>
+ </link>
+
+ <joint name="joint_3" type="revolute">
+   <parent link="link_2"/>
+   <child link="link_3"/>
+   <origin xyz="0 0 ${j3_z}" rpy="0 0 0"/>
+   <axis xyz="1 0 0"/>
+   <limit lower="${(j3_deg_lo-150)*pi/180}" upper="${(j3_deg_hi-150)*pi/180}" effort="1.0" velocity="1.0"/>
+ </joint>
+
+ <!-- ① 요청 1번: joint_4 origin — 위 motor_j4 visual과 j4_z 공유 -->
+ <joint name="joint_4" type="revolute">
+   <parent link="link_3"/>
+   <child link="link_4"/>
+   <origin xyz="0 0 ${j4_z}" rpy="0 0 0"/>
+   <axis xyz="0 0 1"/>
+   <limit lower="${(j4_deg_lo-150)*pi/180}" upper="${(j4_deg_hi-150)*pi/180}" effort="1.0" velocity="1.0"/>
+ </joint>
+
+ <link name="link_4">
+   <!-- link_4_centered_binary.stl: Blender에서 이미 joint_4 축에 원점 맞춰놨으므로 항상 0 0 0 (property 불필요, 구조적으로 고정) -->
+   <visual>
+     <origin xyz="0 0 0" rpy="0 0 0"/>
+     <geometry>
+       <mesh filename="package://robot_arm_description/meshes/printed/link_4_centered_binary.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="link_gray">
+       <color rgba="0.7 0.7 0.7 1.0"/>
+     </material>
+   </visual>
+
+   <!-- ② 요청 2번: 모터 j5 visual — joint_5, joint_gripper_base_fix와 j5_z 공유 -->
+   <visual>
+     <origin xyz="0 0 ${j5_z}" rpy="0 0 0"/>
+     <geometry>
+       <mesh filename="package://robot_arm_description/meshes/vendor/motor_binary_horizon.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="motor_black">
+       <color rgba="0.15 0.15 0.15 1.0"/>
+     </material>
+   </visual>
+ </link>
+
+ <!-- ══════ 그리퍼 파트 ══════ -->
+
+ <!-- ② 요청 2번: gripper_base 부착 위치 — joint_5, motor_j5와 j5_z 공유 -->
+ <joint name="joint_gripper_base_fix" type="fixed">
+   <parent link="link_4"/>
+   <child link="gripper_base_link"/>
+   <origin xyz="0 0 ${j5_z}" rpy="0 0 0"/>
+ </joint>
+
+ <!-- ③ 요청 3번: gripper_base_link, left/right finger 모두 gripper_mesh_z 공유 (가정: 최종적으로 다 0 0 0 예정) -->
+ <xacro:property name="gripper_mesh_z" value="0.003"/>
+
+ <link name="gripper_base_link">
+   <visual>
+     <origin xyz="0 ${j0_y} 0" rpy="0 0 0"/>
+     <geometry>
+       <mesh filename="package://robot_arm_description/meshes/printed/the_crawer_base_centered_binary_180.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="gripper_gray">
+       <color rgba="0.4 0.4 0.4 1.0"/>
+     </material>
+   </visual>
+ </link>
+
+ <!-- ② 요청 2번: joint_5 origin — motor_j5, gripper_base_fix와 j5_z 공유 -->
+ <!-- 그리퍼 하드웨어 리밋(0~150°) 그대로 사용, 실사용 서브범위(0~110°)는 mimic 계산에만 반영 -->
+ <joint name="joint_5" type="revolute">
+   <parent link="link_4"/>
+   <child link="gripper_motor_link"/>
+   <origin xyz="0 0 ${j5_z}" rpy="0 0 0"/>
+   <axis xyz="0 0 1"/>
+   <limit lower="${(j5_deg_lo-150)*pi/180}" upper="${(j5_deg_hi-150)*pi/180}" effort="1.0" velocity="1.0"/>
+ </joint>
+ <link name="gripper_motor_link">
+   <!-- 시각적 표현 불필요하면 visual 생략 가능 -->
+ </link>
+
+ <joint name="joint_gripper_left" type="prismatic">
+   <parent link="gripper_base_link"/>
+   <child link="gripper_left_link"/>
+   <origin xyz="-0.025 0 0" rpy="0 0 0"/>
+   <axis xyz="1 0 0"/>
+   <limit lower="0.0" upper="${gripper_stroke}" effort="1.0" velocity="0.05"/>
+   <mimic joint="joint_5" multiplier="${gripper_mult}" offset="${gripper_offset}"/>
+ </joint>
+
+ <!-- ③ 요청 3번: gripper_mesh_z 공유 -->
+ <link name="gripper_left_link">
+   <visual>
+     <origin xyz="0 0 ${gripper_mesh_z}" rpy="0 0 0"/>
+     <geometry>
+       <mesh filename="package://robot_arm_description/meshes/printed/the_crawer_binary_left.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="gripper_gray">
+       <color rgba="0.4 0.4 0.4 1.0"/>
+     </material>
+   </visual>
+ </link>
+
+ <joint name="joint_gripper_right" type="prismatic">
+   <parent link="gripper_base_link"/>
+   <child link="gripper_right_link"/>
+   <origin xyz="0.025 0 0" rpy="0 0 0"/>
+   <axis xyz="1 0 0"/>
+   <limit lower="${-gripper_stroke}" upper="0.0" effort="1.0" velocity="0.05"/>
+   <mimic joint="joint_5" multiplier="${-gripper_mult}" offset="${-gripper_offset}"/>
+ </joint>
+
+ <!-- ③ 요청 3번: gripper_mesh_z 공유 -->
+ <link name="gripper_right_link">
+   <visual>
+     <origin xyz="0 0 ${gripper_mesh_z}" rpy="0 0 0"/>
+     <geometry>
+       <mesh filename="package://robot_arm_description/meshes/printed/the_crawer_binary_right.stl" scale="0.001 0.001 0.001"/>
+     </geometry>
+     <material name="gripper_gray">
+       <color rgba="0.4 0.4 0.4 1.0"/>
+     </material>
+   </visual>
+ </link>
+
+</robot>

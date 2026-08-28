@@ -377,7 +377,7 @@ arm-record-play() {
 
 URDF/RViz 현재 상태:
 
-- `ros2_ws/src/robot_arm_description/`에 xacro, launch, `meshes/printed`, `meshes/vendor`를 구성했다.
+- `ros2_ws/src/robot_arm_description/`에 xacro, launch와 xacro가 실제 참조하는 12개 STL mesh를 구성했다.
 - `colcon build`, `source install/setup.bash`는 Jetson에서 완료했다.
 - RViz 창/모델의 시각적 검증은 아직 하지 않았다.
 
